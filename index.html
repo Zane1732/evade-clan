@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Haven | Roblox Evade Clan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(45deg, #2e0a0a, #4a1a1a);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #fff;
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 0%, rgba(255, 0, 0, 0.1) 50%, transparent 100%);
+            animation: backgroundScan 4s linear infinite;
+            pointer-events: none;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+            background: rgba(50, 0, 0, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+            border: 2px solid #ff0000;
+        }
+
+        h1 {
+            font-size: 4rem;
+            text-align: center;
+            margin: 2rem 0;
+            text-shadow: 0 0 20px #ff0000;
+            color: #ff0000;
+            animation: textPulse 1.5s ease-in-out infinite;
+            position: relative;
+        }
+
+        h1::after {
+            content: '🌬️';
+            position: absolute;
+            right: -50px;
+            top: -20px;
+            filter: hue-rotate(180deg);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .clan-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: rgba(30, 0, 0, 0.8);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid #ff0000;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        h2 {
+            color: #ff0000;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 0.8rem 0;
+            padding: 0.5rem;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 5px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        li:hover {
+            transform: translateX(10px);
+        }
+
+        .group-link {
+            display: block;
+            width: max-content;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #ff0000, #800000);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .group-link::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: buttonGlow 2s infinite;
+        }
+
+        .group-link:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.5);
+        }
+
+        .coder-credit {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: #ff0000;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #ff0000;
+            animation: creditPulse 2s infinite;
+        }
+
+        /* Intro Box Styles */
+        .intro-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateX(90deg);
+            width: 300px;
+            padding: 2rem;
+            background: rgba(30, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
+            text-align: center;
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 1000;
+        }
+
+        .intro-box.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) rotateX(0deg);
+        }
+
+        .intro-box h3 {
+            color: #ff0000;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+
+        .intro-box p {
+            margin: 0.5rem 0;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes buttonGlow {
+            0% { left: -50%; }
+            100% { left: 150%; }
+        }
+
+        @keyframes backgroundScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        @keyframes creditPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1>DIGITAL HEAVEN</h1>
+            
+            <div class="clan-info">
+                <div class="card">
+                    <h2>Leadership</h2>
+                    <ul>
+                        <li onclick="openIntro('vicky')">👑 Leader: DH_V1c</li>
+                        <li onclick="openIntro('mo0n')">⚔️ Co-Leader: DH_Mo0n</li>
+                        <li>📚 Teachers: DH_Mo0n, DH_V1c</li>
+                        <li onclick="openIntro('zane')">🛠️ Assistants: DH_ZANE</li>
+                        <li onclick="openIntro('violet')">🛠️ Assistants: DHViolet</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2>Rules</h2>
+                    <ul>
+                        <li>🚫 No 18+ content</li>
+                        <li>📵 No voice/video calls</li>
+                        <li>📸 Limit media sharing</li>
+                        <li>🤝 No toxicity</li>
+                        <li>❌ No admin begging</li>
+                        <li>🚪 Notify before leaving</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2>Guidelines</h2>
+                    <ul>
+                        <li>🌍 English chat only</li>
+                        <li>🚫 No drama/couples</li>
+                        <li>⏳ Stay active</li>
+                        <li>💙 Have fun!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <a href="https://chat.whatsapp.com/EX4Bk1SbX5HGvWd5AzVqMe" class="group-link">JOIN NOW</a>
+        </div>
+    </div>
+
+    <!-- Intro Box -->
+    <div class="overlay" id="overlay"></div>
+    <div class="intro-box" id="intro-box">
+        <h3 id="intro-title">Intro</h3>
+        <p id="intro-name">Name: </p>
+        <p id="intro-age">Age: </p>
+        <p id="intro-roblox">Roblox User: </p>
+        <p id="intro-evade">Evade Level: </p>
+        <p id="intro-message">Thank you for entering our Roblox Evade Clan (Digital Heaven 🌬️)</p>
+    </div>
+
+    <div class="coder-credit">Coded with 💙 by ZANE</div>
+
+    <script>
+        const introBox = document.getElementById('intro-box');
+        const overlay = document.getElementById('overlay');
+        const introTitle = document.getElementById('intro-title');
+        const introName = document.getElementById('intro-name');
+        const introAge = document.getElementById('intro-age');
+        const introRoblox = document.getElementById('intro-roblox');
+        const introEvade = document.getElementById('intro-evade');
+        const introMessage = document.getElementById('intro-message');
+
+        const intros = {
+            vicky: {
+                title: "Leader: DH_V1c",
+                name: "Name: Vicky",
+                age: "Age: 14",
+                roblox: "Roblox User: n0rmal_child10",
+                evade: "Evade Level: 116",
+                message: "Thank you for entering our Roblox Evade Clan (Digital Heaven 🌬️)"
+            },
+            mo0n: {
+                title: "Co-Leader: DH_Mo0n",
+                name: "Name: Mo0n",
+                age: "Age: 12",
+                roblox: "Roblox User: Malaysia_8179",
+                evade: "Evade Level: 160",
+                message: "Thank you for entering our Roblox Evade Clan (Digital Heaven 🌬️)"
+            },
+            zane: {
+                title: "Assistant: DH_ZANE",
+                name: "Name: ZANE",
+                age: "Age: 1",
+                roblox: "Roblox User: KING1310Z",
+                evade: "Evade Level: 62",
+                message: "Thank you for entering our Roblox Evade Clan (Digital Heaven 🌬️)"
+            },
+            violet: {
+                title: "Assistant: DHViolet",
+                name: "Name: Ninie",
+                age: "Age: 13",
+                roblox: "Roblox User: violett",
+                evade: "Evade Level: 76",
+                message: "Thank you for entering our Roblox Evade Clan (Digital Heaven 🌬️)"
+            }
+        };
+
+        function openIntro(member) {
+            const intro = intros[member];
+            introTitle.textContent = intro.title;
+            introName.textContent = intro.name;
+            introAge.textContent = intro.age;
+            introRoblox.textContent = intro.roblox;
+            introEvade.textContent = intro.evade;
+            introMessage.textContent = intro.message;
+
+            introBox.classList.add('active');
+            overlay.classList.add('active');
+        }
+
+        overlay.addEventListener('click', () => {
+            introBox.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
